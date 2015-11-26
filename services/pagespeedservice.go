@@ -1,7 +1,7 @@
 package services
 
 import (
-	"DaaS/models"
+	"github.com/Ramshackle-Jamathon/DaaS/models"
 	"net/http"
     "bytes"
     "time"

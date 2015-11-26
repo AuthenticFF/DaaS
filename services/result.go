@@ -1,7 +1,7 @@
 package services
 
 import (
-	"DaaS/models"
+	"github.com/Ramshackle-Jamathon/DaaS/models"
     "gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2"
 )

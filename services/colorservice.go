@@ -1,7 +1,7 @@
 package services
 
 import (
-	"DaaS/models"
+	"github.com/Ramshackle-Jamathon/DaaS/models"
     "fmt"
     "github.com/conformal/gotk3/gtk"
     "github.com/conformal/gotk3/glib"

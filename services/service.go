@@ -1,7 +1,7 @@
 package services
 
 import (
-	"DaaS/db"
+	"github.com/Ramshackle-Jamathon/DaaS/db"
 	"log"
 )
 

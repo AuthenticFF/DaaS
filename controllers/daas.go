@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"github.com/julienschmidt/httprouter"
-	"DaaS/models"
-	"DaaS/services"
+	"github.com/Ramshackle-Jamathon/DaaS/models"
+	"github.com/Ramshackle-Jamathon/DaaS/services"
 	"net/http"
 	"errors"
     "github.com/asaskevich/govalidator"

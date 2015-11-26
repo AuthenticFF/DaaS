@@ -1,7 +1,7 @@
 package services
 
 import (
-	"DaaS/models"
+	"github.com/Ramshackle-Jamathon/DaaS/models"
     "time"
 
     vegeta "github.com/tsenart/vegeta/lib"

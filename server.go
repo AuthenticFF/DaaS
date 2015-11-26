@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/julienschmidt/httprouter"
-	"DaaS/controllers"
-	"DaaS/db"
+	"github.com/Ramshackle-Jamathon/DaaS/controllers"
+	"github.com/Ramshackle-Jamathon/DaaS/db"
 	"html/template"
 	"io/ioutil"	
 	"log"
