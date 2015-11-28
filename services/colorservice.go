@@ -49,6 +49,7 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
                 gtk.MainQuit()
             })  
             webView.GetSnapshot(func(img *image.RGBA, err error) {
+                fmt.Printf("heythere");
                 if err != nil {
                     t.Errorf("GetSnapshot error: %q", err)
                 }
