@@ -21,7 +21,7 @@ type PageSpeedService struct {
 
 func (s *PageSpeedService) GetData(result models.Result) (models.Result, error) {
 
-	timeout := time.Duration(8 * time.Second)
+	timeout := time.Duration(10 * time.Second)
 	client := http.Client{
 	    Timeout: timeout,
 	}

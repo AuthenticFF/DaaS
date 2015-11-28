@@ -8,6 +8,7 @@ import (
     "github.com/sourcegraph/go-webkit2/webkit2"
     "github.com/sqs/gojs"
     "runtime"
+    "image"
 )
 
 var colorService IColorService
@@ -31,6 +32,7 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
     webView.Connect("load-failed", func() {
         fmt.Println("Load failed.")
     })
+
     webView.Connect("load-changed", func(_ *glib.Object, i int) {
         loadEvent := webkit2.LoadEvent(i)
         switch loadEvent {
@@ -45,7 +47,21 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
                     fmt.Printf("Hostname (from JavaScript): %q\n", val)
                 }
                 gtk.MainQuit()
+            })  
+            webView.GetSnapshot(func(img *image.RGBA, err error) {
+                if err != nil {
+                    t.Errorf("GetSnapshot error: %q", err)
+                }
+                if img.Pix == nil {
+                    t.Error("!img.Pix")
+                }
+                if img.Stride == 0 || img.Rect.Max.X == 0 || img.Rect.Max.Y == 0 {
+                    t.Error("!img.Stride or !img.Rect.Max.X or !img.Rect.Max.Y")
+                }
+                result.Image = img;
+                gtk.MainQuit()
             })
+
         }
     })
 
