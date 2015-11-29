@@ -39,7 +39,7 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
 
     testHTML, err := ioutil.ReadFile("typography.html")
     if err != nil {
-        return result err
+        return result, err
     }
 
     webView.Connect("load-changed", func(_ *glib.Object, i int) {
