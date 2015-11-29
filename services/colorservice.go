@@ -39,7 +39,7 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
 
     testHTML, err := ioutil.ReadFile("typography.html")
     if err != nil {
-        //Do something
+        return result err
     }
 
     webView.Connect("load-changed", func(_ *glib.Object, i int) {
@@ -49,7 +49,7 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
                 log.Println("Load finished.")
                 log.Printf("Title: %q\n", webView.Title())
                 log.Printf("URI: %s\n", webView.URI())
-                webView.RunJavaScript("document.body.insertAdjacentHTML( 'afterbegin', '"+ testHTML +"' );", func(val *gojs.Value, err error) {
+                webView.RunJavaScript("document.body.insertAdjacentHTML( 'afterbegin', '"+ string(testHTML) +"' );", func(val *gojs.Value, err error) {
                     if err != nil {
                         log.Println("JavaScript error.")
                     } else {
