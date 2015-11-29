@@ -12,7 +12,6 @@ import (
     "image/jpeg"
     "bytes"
     "encoding/base64"
-    "strings"
     "io/ioutil"
 )
 
@@ -42,7 +41,6 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
     if err != nil {
         //Do something
     }
-    lines := strings.Split(string(testHTML), "\n")
 
     webView.Connect("load-changed", func(_ *glib.Object, i int) {
         loadEvent := webkit2.LoadEvent(i)
@@ -51,7 +49,7 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
                 log.Println("Load finished.")
                 log.Printf("Title: %q\n", webView.Title())
                 log.Printf("URI: %s\n", webView.URI())
-                webView.RunJavaScript("document.body.insertAdjacentHTML( 'afterbegin', '"+ lines +"' );", func(val *gojs.Value, err error) {
+                webView.RunJavaScript("document.body.insertAdjacentHTML( 'afterbegin', '"+ testHTML +"' );", func(val *gojs.Value, err error) {
                     if err != nil {
                         log.Println("JavaScript error.")
                     } else {
