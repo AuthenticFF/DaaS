@@ -43,7 +43,9 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
 
 
     //loading html snipit
-    absPath, _ := filepath.Abs("/services/assets/typography.html")
+    absPath, _ := filepath.Abs("services/assets/typography.html")
+    log.Println(absPath)
+
     testHTML, err := ioutil.ReadFile(absPath)
     if err != nil {
         return result, err

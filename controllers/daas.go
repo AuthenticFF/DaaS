@@ -4,11 +4,13 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/Ramshackle-Jamathon/DaaS/models"
 	"github.com/Ramshackle-Jamathon/DaaS/services"
-	"net/http"
-	"errors"
-    "github.com/asaskevich/govalidator"
     "net"
 	"net/url"
+	"net/http"
+	"errors"
+    "log"
+	"github.com/asaskevich/govalidator"
+    "github.com/miekg/dns"
 )
 
 type daasController struct {
@@ -40,24 +42,27 @@ func (c *daasController) Analyze(writer http.ResponseWriter, req *http.Request, 
 		if err != nil {
 			return nil, ServerError(err)
 		}
-
+        log.Println("URL valid.")
 		//google pagespeed test
 		pageResult, err := c.pageSpeedService.GetData(result)
 		if err != nil {
 			return nil, ServerError(err)
 		}
+        log.Println("Pagespeed complete.")
 
 		//vegeta server test
 		serverResult, err := c.serverLoadService.GetData(pageResult)
 		if err != nil {
 			return nil, ServerError(err)
 		}
+        log.Println("server load complete.")
 
 		//page color test
 		colorResult, err := c.colorService.GetData(serverResult)
 		if err != nil {
 			return nil, ServerError(err)
 		}
+        log.Println("color analysis complete.")
 
 		//store in MongoDB
 		storedResult, err := c.resultService.NewResult(colorResult)
@@ -80,23 +85,49 @@ func (c *daasController) validateURL(urlString string) (string, error) {
 	if validURL == false {
 		return urlString, errors.New("Invalid URL Format")
 	}
+    log.Println("validation is url.")
 
 	//DNS lookup 
 	urlObject, err := url.Parse(urlString)
 	if err != nil {
 		return urlString, err
 	}
+    log.Println("validation DNS success.")
 
 	urlObject.Scheme = "http"
 	urlObject, err = url.Parse(urlObject.String())
 	if err != nil {
 		return urlString, err
 	}
+    log.Println("validation Scheme.")
 
-	_, err = net.LookupHost(urlObject.Host)
+    //temporarily unreliable
+	/*_, err = net.LookupHost(urlObject.Host)
 	if err != nil {
 		return urlString, err
 	}
+    log.Println("validation Host exists.")*/
+    server := "8.8.8.8"
+    c := dns.Client{}
+    m := dns.Msg{}
+    m.SetQuestion(urlObject.String()+".", dns.TypeA)
+    r, t, err := c.Exchange(&m, server+":53")
+    if err != nil {
+		return urlString, err
+    }
+    log.Printf("Took %v", t)
+    if len(r.Answer) == 0 {
+        return urlString, errors.New("No results")
+    }
+    for _, ans := range r.Answer {
+        Arecord := ans.(*dns.A)
+        log.Printf("%s", Arecord.A)
+    }
+
+
+
+
+
 
 	return urlObject.String(), nil
 }
