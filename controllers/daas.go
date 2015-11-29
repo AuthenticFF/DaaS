@@ -8,7 +8,6 @@ import (
 	"errors"
     "github.com/asaskevich/govalidator"
     "net"
-    "log"
 	"net/url"
 )
 
@@ -76,33 +75,29 @@ URL validation/correction and DNS resolution
 */
 func (c *daasController) validateURL(urlString string) (string, error) {
 
-	log.Printf("valid 1")
 	//check for valid URL format
 	validURL := govalidator.IsURL(urlString)
 	if validURL == false {
 		return urlString, errors.New("Invalid URL Format")
 	}
 
-	log.Printf("valid 2")
 	//DNS lookup 
 	urlObject, err := url.Parse(urlString)
 	if err != nil {
 		return urlString, err
 	}
 
-	log.Printf("valid 3")
 	urlObject.Scheme = "http"
 	urlObject, err = url.Parse(urlObject.String())
 	if err != nil {
 		return urlString, err
 	}
 
-	log.Printf("valid 4")
 	_, err = net.LookupHost(urlObject.Host)
 	if err != nil {
 		return urlString, err
 	}
-	log.Printf("valid complete")
+
 	return urlObject.String(), nil
 }
 

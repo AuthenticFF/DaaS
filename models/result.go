@@ -2,7 +2,6 @@ package models
 
 import (
     "gopkg.in/mgo.v2/bson"
-    "image"
 	//"time"
     vegeta "github.com/tsenart/vegeta/lib"
 )
@@ -14,6 +13,6 @@ type (
 		Url        string    `json:"url" bson:"url"`
 		PageData map[string]interface{} `json:"pagedata" bson:"pagedata"`
 		ServerData vegeta.Metrics `json:"serverdata" bson:"serverdata"`
-		Image *image.RGBA `json:"image" bson:"image"`
+		Image string `json:"image" bson:"image"`
 	}
 )

@@ -2,13 +2,18 @@ package services
 
 import (
 	"github.com/Ramshackle-Jamathon/DaaS/models"
-    "fmt"
+    "log"
     "github.com/conformal/gotk3/gtk"
     "github.com/conformal/gotk3/glib"
     "github.com/sourcegraph/go-webkit2/webkit2"
     "github.com/sqs/gojs"
     "runtime"
     "image"
+    "image/jpeg"
+    "bytes"
+    "encoding/base64"
+    "strings"
+    "io/ioutil"
 )
 
 var colorService IColorService
@@ -30,38 +35,47 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
     defer webView.Destroy()
 
     webView.Connect("load-failed", func() {
-        fmt.Println("Load failed.")
+        log.Println("Load failed.")
     })
+
+    testHTML, err := ioutil.ReadFile("typography.html")
+    if err != nil {
+        //Do something
+    }
+    lines := strings.Split(string(testHTML), "\n")
 
     webView.Connect("load-changed", func(_ *glib.Object, i int) {
         loadEvent := webkit2.LoadEvent(i)
         switch loadEvent {
-        case webkit2.LoadFinished:
-            fmt.Println("Load finished.")
-            fmt.Printf("Title: %q\n", webView.Title())
-            fmt.Printf("URI: %s\n", webView.URI())
-            webView.RunJavaScript("window.location.hostname", func(val *gojs.Value, err error) {
-                if err != nil {
-                    fmt.Println("JavaScript error.")
-                } else {
-                    fmt.Printf("Hostname (from JavaScript): %q\n", val)
-                }
-                gtk.MainQuit()
-            })  
-            webView.GetSnapshot(func(img *image.RGBA, err error) {
-                fmt.Printf("heythere");
-                if err != nil {
-                    t.Errorf("GetSnapshot error: %q", err)
-                }
-                if img.Pix == nil {
-                    t.Error("!img.Pix")
-                }
-                if img.Stride == 0 || img.Rect.Max.X == 0 || img.Rect.Max.Y == 0 {
-                    t.Error("!img.Stride or !img.Rect.Max.X or !img.Rect.Max.Y")
-                }
-                result.Image = img;
-                gtk.MainQuit()
-            })
+            case webkit2.LoadFinished:
+                log.Println("Load finished.")
+                log.Printf("Title: %q\n", webView.Title())
+                log.Printf("URI: %s\n", webView.URI())
+                webView.RunJavaScript("document.body.insertAdjacentHTML( 'afterbegin', '"+ lines +"' );", func(val *gojs.Value, err error) {
+                    if err != nil {
+                        log.Println("JavaScript error.")
+                    } else {
+                        log.Printf("Hostname (from JavaScript): %q\n", val)
+                    }
+                })  
+                webView.GetSnapshot(func(img *image.RGBA, err error) {
+                    if err != nil {
+                        log.Printf("GetSnapshot error: %q", err)
+                    }
+                    if img.Pix == nil {
+                        log.Printf("!img.Pix")
+                    }
+                    if img.Stride == 0 || img.Rect.Max.X == 0 || img.Rect.Max.Y == 0 {
+                        log.Printf("!img.Stride or !img.Rect.Max.X or !img.Rect.Max.Y")
+                    }
+                    buf := new(bytes.Buffer)
+                    jpeg.Encode(buf, img, nil)
+
+                    imgBase64Str := base64.StdEncoding.EncodeToString(buf.Bytes())
+
+                    result.Image = imgBase64Str
+                    gtk.MainQuit()
+                })
 
         }
     })

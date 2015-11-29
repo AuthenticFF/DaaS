@@ -13,7 +13,7 @@ RUN chmod a+x /init.sh
 #build Go App
 RUN go get github.com/Ramshackle-Jamathon/DaaS
 
-#ADD . /go/src/github.com/Ramshackle-Jamathon/DaaS
+ADD . /go/src/github.com/Ramshackle-Jamathon/DaaS
 WORKDIR /go/src/github.com/Ramshackle-Jamathon/DaaS
 RUN go get
 RUN go install
