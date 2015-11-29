@@ -9,7 +9,8 @@ import (
 var Session *mgo.Session
 
 ///CHANGE THESE
-var mongohosts = "daas_database_1"//"mongodb://localhost"//os.Getenv("MONGO_URL")
+var mongohosts = "daas_database_1"//os.Getenv("MONGO_URL")
+//var mongohosts = "mongodb://localhost"
 
 
 func init() {

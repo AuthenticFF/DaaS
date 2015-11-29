@@ -10,7 +10,6 @@ import (
 	"errors"
     "log"
 	"github.com/asaskevich/govalidator"
-    "github.com/miekg/dns"
 )
 
 type daasController struct {
@@ -102,32 +101,11 @@ func (c *daasController) validateURL(urlString string) (string, error) {
     log.Println("validation Scheme.")
 
     //temporarily unreliable
-	/*_, err = net.LookupHost(urlObject.Host)
+	_, err = net.LookupHost(urlObject.Host)
 	if err != nil {
 		return urlString, err
 	}
-    log.Println("validation Host exists.")*/
-    server := "8.8.8.8"
-    c := dns.Client{}
-    m := dns.Msg{}
-    m.SetQuestion(urlObject.String()+".", dns.TypeA)
-    r, t, err := c.Exchange(&m, server+":53")
-    if err != nil {
-		return urlString, err
-    }
-    log.Printf("Took %v", t)
-    if len(r.Answer) == 0 {
-        return urlString, errors.New("No results")
-    }
-    for _, ans := range r.Answer {
-        Arecord := ans.(*dns.A)
-        log.Printf("%s", Arecord.A)
-    }
-
-
-
-
-
+    log.Println("validation Host exists.")
 
 	return urlObject.String(), nil
 }

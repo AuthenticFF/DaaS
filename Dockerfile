@@ -19,8 +19,8 @@ RUN go get
 RUN go install
 
 
-ENV PORT=8080
-EXPOSE 8080
+ENV PORT=9091
+EXPOSE 9091
 
 #crush it
 ENTRYPOINT /init.sh go run server.go
