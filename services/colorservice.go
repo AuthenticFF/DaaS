@@ -13,6 +13,9 @@ import (
     "bytes"
     "encoding/base64"
     "io/ioutil"
+    "path/filepath"
+    "fmt"
+    "strings"
 )
 
 var colorService IColorService
@@ -37,10 +40,18 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
         log.Println("Load failed.")
     })
 
-    testHTML, err := ioutil.ReadFile("typography.html")
+
+
+    //loading html snipit
+    absPath, _ := filepath.Abs("/services/assets/typography.html")
+    testHTML, err := ioutil.ReadFile(absPath)
     if err != nil {
         return result, err
     }
+    js := fmt.Sprint("document.body.insertAdjacentHTML( 'afterbegin', '",string(testHTML), "' );")
+    js = strings.Replace(js,"\n","<br>",-1)
+
+
 
     webView.Connect("load-changed", func(_ *glib.Object, i int) {
         loadEvent := webkit2.LoadEvent(i)
@@ -49,9 +60,9 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
                 log.Println("Load finished.")
                 log.Printf("Title: %q\n", webView.Title())
                 log.Printf("URI: %s\n", webView.URI())
-                webView.RunJavaScript("document.body.insertAdjacentHTML( 'afterbegin', '"+ string(testHTML) +"' );", func(val *gojs.Value, err error) {
+                webView.RunJavaScript(js, func(val *gojs.Value, err error) {
                     if err != nil {
-                        log.Println("JavaScript error.")
+                        log.Println(err)
                     } else {
                         log.Printf("Hostname (from JavaScript): %q\n", val)
                     }
@@ -67,7 +78,7 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
                         log.Printf("!img.Stride or !img.Rect.Max.X or !img.Rect.Max.Y")
                     }
                     buf := new(bytes.Buffer)
-                    jpeg.Encode(buf, img, nil)
+                    jpeg.Encode(buf, img, &jpeg.Options{100})
 
                     imgBase64Str := base64.StdEncoding.EncodeToString(buf.Bytes())
 
@@ -82,6 +93,32 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
         webView.LoadURI("https://www.google.com/")
         return false
     })
+
+
+    // Create a new toplevel window, set its title, and connect it to the
+    // "destroy" signal to exit the GTK main loop when it is destroyed.
+    win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
+    if err != nil {
+        log.Fatal("Unable to create window:", err)
+    }
+    win.SetTitle("Simple Example")
+    win.Connect("destroy", func() {
+        gtk.MainQuit()
+    })
+    // Create a new label widget to show in the window.
+    l, err := gtk.LabelNew("Hello, gotk3!")
+    if err != nil {
+        log.Fatal("Unable to create label:", err)
+    }
+
+    // Add the label to the window.
+    win.Add(l)
+
+    // Set the default window size.
+    win.SetDefaultSize(1920, 1080)
+
+    // Recursively show all widgets contained in this window.
+    win.ShowAll()
 
     gtk.Main()
 
