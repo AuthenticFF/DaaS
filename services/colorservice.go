@@ -63,13 +63,6 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
                 log.Println("Load finished.")
                 log.Printf("Title: %q\n", webView.Title())
                 log.Printf("URI: %s\n", webView.URI())
-                webView.RunJavaScript(js, func(val *gojs.Value, err error) {
-                    if err != nil {
-                        log.Println(err)
-                    } else {
-                        log.Printf("Hostname (from JavaScript): %q\n", val)
-                    }
-                })  
                 webView.GetSnapshot(func(img *image.RGBA, err error) {
                     if err != nil {
                         log.Printf("GetSnapshot error: %q", err)
@@ -86,9 +79,36 @@ func (s *ColorService) GetData(result models.Result) (models.Result, error){
                     imgBase64Str := base64.StdEncoding.EncodeToString(buf.Bytes())
 
                     result.Image = imgBase64Str
-                    gtk.MainQuit()
                 })
+                log.Println("Snapshot 1")
+                webView.RunJavaScript(js, func(val *gojs.Value, err error) {
+                    if err != nil {
+                        log.Println(err)
+                    } else {
+                        log.Printf("Hostname (from JavaScript): %q\n", val)
+                    }
+                    log.Println("JS executed")
+                    webView.GetSnapshot(func(img *image.RGBA, err error) {
+                        log.Println("In")
+                        if err != nil {
+                            log.Printf("GetSnapshot error: %q", err)
+                        }
+                        if img.Pix == nil {
+                            log.Printf("!img.Pix")
+                        }
+                        if img.Stride == 0 || img.Rect.Max.X == 0 || img.Rect.Max.Y == 0 {
+                            log.Printf("!img.Stride or !img.Rect.Max.X or !img.Rect.Max.Y")
+                        }
+                        buf := new(bytes.Buffer)
+                        jpeg.Encode(buf, img, &jpeg.Options{100})
 
+                        imgBase64Str := base64.StdEncoding.EncodeToString(buf.Bytes())
+
+                        result.TypographyImage = imgBase64Str
+                        log.Println("OUT")
+                        gtk.MainQuit()
+                    })
+                })  
         }
     })
 

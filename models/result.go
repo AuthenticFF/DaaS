@@ -14,5 +14,6 @@ type (
 		PageData map[string]interface{} `json:"pagedata" bson:"pagedata"`
 		ServerData vegeta.Metrics `json:"serverdata" bson:"serverdata"`
 		Image string `json:"image" bson:"image"`
+		TypographyImage string `json:"typographyimage" bson:"typographyimage"`
 	}
 )
