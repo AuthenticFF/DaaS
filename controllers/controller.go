@@ -16,7 +16,7 @@ var Daas daasController
 
 func Init(router *httprouter.Router) *httprouter.Router {
 
-	Daas = daasController{services.PageSpeed, services.ServerLoad, services.Result, services.Color}
+	Daas = daasController{services.PageSpeed, services.ServerLoad, services.Result, services.Color, services.Typography}
 	router = Daas.Init(router)
 	log.Printf("Controllers Initialized");
 

@@ -1,7 +1,7 @@
 FROM golang:latest
 
 # Install webkit/gtk 
-RUN apt-get update && apt-get install -y  --fix-missing libwebkit2gtk-3.0-dev xvfb
+RUN apt-get update && apt-get install -y libwebkit2gtk-3.0-dev xvfb
 
 #configure xvfb
 ENV DISPLAY :99
@@ -11,7 +11,7 @@ ADD ./init.sh /init.sh
 RUN chmod a+x /init.sh
 
 #build Go App
-RUN go get github.com/Ramshackle-Jamathon/DaaS
+#RUN go get github.com/Ramshackle-Jamathon/DaaS
 
 ADD . /go/src/github.com/Ramshackle-Jamathon/DaaS
 WORKDIR /go/src/github.com/Ramshackle-Jamathon/DaaS
