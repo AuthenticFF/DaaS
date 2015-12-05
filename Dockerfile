@@ -1,7 +1,7 @@
 FROM golang:latest
 
 # Install webkit/gtk 
-RUN apt-get update && apt-get install -y libwebkit2gtk-4.0-dev xvfb
+RUN apt-get update && apt-get install -y libwebkit2gtk-3.0-dev libglib2.0-dev libcairo2-dev xvfb
 
 #configure xvfb
 ENV DISPLAY :99
@@ -24,3 +24,6 @@ EXPOSE 9091
 
 #crush it
 ENTRYPOINT /init.sh go run server.go
+
+#excellent command
+#docker rmi -f $(docker images | grep "^<none>" | awk "{print $3}")

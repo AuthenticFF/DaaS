@@ -13,11 +13,14 @@ import (
 )
 
 var Daas daasController
+var DaasWebSocket daasWebSocketController
 
 func Init(router *httprouter.Router) *httprouter.Router {
 
-	Daas = daasController{services.PageSpeed, services.ServerLoad, services.Result, services.Color, services.Typography}
+	Daas = daasController{services.PageSpeed, services.Result, services.Color, services.Typography}
+	DaasWebSocket = daasWebSocketController{services.ServerLoad, services.Result}
 	router = Daas.Init(router)
+	DaasWebSocket.Init();
 	log.Printf("Controllers Initialized");
 
 	return router
