@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"github.com/Ramshackle-Jamathon/DaaS/services"
-	"github.com/Ramshackle-Jamathon/DaaS/controllers/websocket"
     "golang.org/x/net/websocket"
     "net/http"
     "fmt"
