@@ -1,20 +1,14 @@
 FROM golang:latest
 
-# Install webkit/gtk 
-RUN apt-get update && apt-get install -y libwebkit2gtk-3.0-dev libglib2.0-dev libcairo2-dev xvfb
 
-#configure xvfb
-ENV DISPLAY :99
-ADD xvfb-init /etc/init.d/xvfb
-RUN chmod a+x /etc/init.d/xvfb
 ADD ./init.sh /init.sh
 RUN chmod a+x /init.sh
 
 #build Go App
-RUN go get github.com/Ramshackle-Jamathon/DaaS
+RUN go get github.com/AuthenticFF
 
-ADD . /go/src/github.com/Ramshackle-Jamathon/DaaS
-WORKDIR /go/src/github.com/Ramshackle-Jamathon/DaaS
+ADD . /go/src/github.com/AuthenticFF/DaaS
+WORKDIR /go/src/github.com/AuthenticFF/DaaS
 RUN go get
 RUN go install
 

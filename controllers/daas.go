@@ -32,15 +32,13 @@ Main API method
 */
 func (c *daasController) Analyze(writer http.ResponseWriter, req *http.Request, params httprouter.Params) (interface{}, httpStatus) {
     var wg sync.WaitGroup
-
-    wg.Add(1)
     var result models.Result
     var pageResult models.Result
-    //var snapshotResult models.Result
+    var snapshotResult models.Result
    // var typographyResult models.Result
     //var serverResult models.Result
     var pageErr error
-    //var snapshotErr error
+    var snapshotErr error
     //var typographyErr error
     //var serverErr error
 
@@ -57,6 +55,8 @@ func (c *daasController) Analyze(writer http.ResponseWriter, req *http.Request, 
 		}
         log.Println("URL valid.")
 		//google pagespeed test
+
+    	wg.Add(1)
 		go func() {
 			pageResult, pageErr = c.pageSpeedService.GetData(result)
 	        log.Println("Pagespeed complete.")
@@ -85,15 +85,25 @@ func (c *daasController) Analyze(writer http.ResponseWriter, req *http.Request, 
         	wg.Done()
     	}()*/
 
-    			//page color test
-		result, err = c.colorService.GetData(result)
-		if err != nil {
-			return nil, ServerError(err)
-		}
+    	//wg.Add(1)
+		//go func() {
+		//snapshotResult, snapshotErr = c.colorService.GetData(result)
+	    //log.Println("Snapshot complete.")
+    	//wg.Done()
+    	//}()
 
 	    wg.Wait()
 	    log.Println("synched")
+
+	   	if pageErr != nil {
+			return nil, ServerError(err)
+		}
 	    result.PageData = pageResult.PageData
+
+	   	if snapshotErr != nil {
+			return nil, ServerError(err)
+		}
+	    result.Image  = snapshotResult.Image
 
 		//store in MongoDB
 		storedResult, err := c.resultService.NewResult(result)

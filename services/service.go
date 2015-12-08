@@ -17,7 +17,7 @@ func init() {
 	Typography = TypographyService{}
 
 	Color = ColorService{}
-	go Color.Main();
+	//go Color.Main();
 	
 	Result = ResultService{db.Session}
 	log.Printf("Services Initialized");
