@@ -3,7 +3,7 @@ daas:
   ports: 
     - 9091:9091
   volumes:
-    - /go/src/DaaS
+    - /go/src/github.com/AuthenticFF/DaaS/
   links:
     - database
   environment:

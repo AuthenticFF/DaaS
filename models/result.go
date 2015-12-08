@@ -3,7 +3,6 @@ package models
 import (
     "gopkg.in/mgo.v2/bson"
 	//"time"
-    vegeta "github.com/tsenart/vegeta/lib"
 )
 
 type (  

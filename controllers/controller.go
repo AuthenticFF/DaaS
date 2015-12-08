@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/julienschmidt/httprouter"
-	"github.com/Ramshackle-Jamathon/DaaS/services"
+	"github.com/AuthenticFF/DaaS/services"
 	"net/http"
 	"os"
 	"log"

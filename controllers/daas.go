@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/Ramshackle-Jamathon/DaaS/models"
-	"github.com/Ramshackle-Jamathon/DaaS/services"
+	"github.com/AuthenticFF/DaaS/models"
+	"github.com/AuthenticFF/DaaS/services"
 
     "net"
 	"net/url"
