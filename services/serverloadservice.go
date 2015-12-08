@@ -33,7 +33,6 @@ func (s *ServerLoadService) GetData(result models.Result) (models.Result, error)
         metrics.Add(res)
     }
     metrics.Close();
-    result.ServerData = metrics;
 
 
     return result, nil 

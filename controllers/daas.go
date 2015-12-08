@@ -34,13 +34,7 @@ func (c *daasController) Analyze(writer http.ResponseWriter, req *http.Request, 
     var wg sync.WaitGroup
     var result models.Result
     var pageResult models.Result
-    var snapshotResult models.Result
-   // var typographyResult models.Result
-    //var serverResult models.Result
     var pageErr error
-    var snapshotErr error
-    //var typographyErr error
-    //var serverErr error
 
 
 
@@ -54,8 +48,8 @@ func (c *daasController) Analyze(writer http.ResponseWriter, req *http.Request, 
 			return nil, ServerError(err)
 		}
         log.Println("URL valid.")
-		//google pagespeed test
 
+		//google pagespeed test
     	wg.Add(1)
 		go func() {
 			pageResult, pageErr = c.pageSpeedService.GetData(result)
@@ -63,12 +57,6 @@ func (c *daasController) Analyze(writer http.ResponseWriter, req *http.Request, 
         	wg.Done()
     	}()
 
-		//page snapshot
-		/*go func(snapshotResult models.Result, snapshotErr error) {
-			snapshotResult, snapshotErr = c.colorService.GetData(result)
-	        log.Println("page snapshot complete.")
-        	wg.Done()
-    	}(snapshotResult, snapshotErr)*/
 
 		//typography
 		/*typographyResult, err := c.colorService.GetTypography(snapshotResult)
@@ -85,13 +73,6 @@ func (c *daasController) Analyze(writer http.ResponseWriter, req *http.Request, 
         	wg.Done()
     	}()*/
 
-    	//wg.Add(1)
-		//go func() {
-		//snapshotResult, snapshotErr = c.colorService.GetData(result)
-	    //log.Println("Snapshot complete.")
-    	//wg.Done()
-    	//}()
-
 	    wg.Wait()
 	    log.Println("synched")
 
@@ -99,11 +80,6 @@ func (c *daasController) Analyze(writer http.ResponseWriter, req *http.Request, 
 			return nil, ServerError(err)
 		}
 	    result.PageData = pageResult.PageData
-
-	   	if snapshotErr != nil {
-			return nil, ServerError(err)
-		}
-	    result.Image  = snapshotResult.Image
 
 		//store in MongoDB
 		storedResult, err := c.resultService.NewResult(result)
@@ -127,28 +103,24 @@ func (c *daasController) validateURL(urlString string) (string, error) {
 	if validURL == false {
 		return urlString, errors.New("Invalid URL Format")
 	}
-    log.Println("validation is url.")
 
 	//DNS lookup 
 	urlObject, err := url.Parse(urlString)
 	if err != nil {
 		return urlString, err
 	}
-    log.Println("validation DNS success.")
 
 	urlObject.Scheme = "http"
 	urlObject, err = url.Parse(urlObject.String())
 	if err != nil {
 		return urlString, err
 	}
-    log.Println("validation Scheme.")
 
     //will break if docker container is not updating dns properly
 	_, err = net.LookupHost(urlObject.Host)
 	if err != nil {
 		return urlString, err
 	}
-    log.Println("validation Host exists.")
 
 
 	return urlObject.String(), nil
