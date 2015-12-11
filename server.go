@@ -13,7 +13,7 @@ import (
 
 var PathSeperator = string(os.PathSeparator)
 var Templates = template.New("")
-var htmlTemplates = []string{"frontend/httpdocs/index.html"}
+var htmlTemplates = []string{"frontend/index.html"}
 
 func main() {
 	CompileRootTemplates()
@@ -21,11 +21,11 @@ func main() {
 	defer db.Session.Close();
 	// USER APP PAGE ROUTING
 	// Probably Could Use Some Work
-	router.GET("/", RenderTemplate("frontend/httpdocs/index"))
+	router.GET("/", RenderTemplate("frontend/index"))
 
 	// USER APP STATIC FILES
 	// Probably Could Use Some Work
-	router.ServeFiles("/assets/*filepath", http.Dir("frontend/httpdocs/assets/"))
+	router.ServeFiles("/static/*filepath", http.Dir("frontend/assets/"))
 	router = controllers.Init(router)
 
 	port := os.Getenv("PORT")

@@ -1,6 +1,5 @@
 FROM golang:latest
 
-
 ADD ./init.sh /init.sh
 RUN chmod a+x /init.sh
 
@@ -17,7 +16,7 @@ ENV PORT=9091
 EXPOSE 9091
 
 #crush it
-ENTRYPOINT /init.sh go run server.go
+ENTRYPOINT /init.sh go run server.go & (cd frontend && npm start)
 
 #excellent command
 #docker rmi -f $(docker images | grep "^<none>" | awk "{print $3}")
